@@ -8,18 +8,42 @@
                     </div>
 
                     <div class="card-body">
-                        <ul v-if="posts != null && posts.length > 0">
-                            <li v-for="(post, index) of posts" :key="index">
-                                <p v-html="`<b>Título:</b> ${post.title}`"></p>
-                                <p v-html="`<b>Autor:</b> ${post.author}`"></p>
-                                <p v-html="`<b>Subtítulo:</b> ${post.slug}`"></p>
-                                <p v-html="`<b>Miniatura:</b>`"></p>
-                                <img :src="`/storage/${ post.image }`" alt="" width="20%">
-                                <button @click="redirect(post.id, index)" class="btn btn-success">Show</button>
-                                <br>
-                                <hr>
-                            </li>
-                        </ul>
+                        <span v-if="posts != null && posts.length > 0">
+                            <paginate name="posts" :list="posts" :per="5">
+                                <li v-for="(post, index) in paginated('posts')" :key="post.id">
+                                    <p v-html="`<b>Título:</b> ${post.title}`"></p>
+                                    <p v-html="`<b>Autor:</b> ${post.author}`"></p>
+                                    <p v-html="`<b>Subtítulo:</b> ${post.slug}`"></p>
+                                    <p v-html="`<b>Miniatura:</b>`"></p>
+                                    <span v-if="post.image">
+                                        <img :src="`/storage/${ post.image }`" alt="" width="20%">
+                                    </span>
+                                    <span>
+                                        <p>
+                                            <b>Resumen:</b>
+                                            {{ post.description | resume }}
+                                        </p>
+                                    </span>
+                                    <button @click="redirect(post.id, index)" class="btn btn-success">Detalle</button>
+                                    <br>
+                                    <hr>
+                                </li>
+                            </paginate>
+
+                            <paginate-links 
+                                for="posts"
+                                :simple="{
+                                    prev: 'Back',
+                                    next: 'Next'
+                                }"
+                                :classes="{
+                                    'ul': 'simple-links-container',
+                                    '.next > a': 'next-link',
+                                    '.prev > a': ['prev-link', 'another-class'] // multiple classes
+                                }"
+                            ></paginate-links>
+                        </span>
+
                         <h5 v-else>
                             <b>No hay posts para mostrar</b>
                         </h5>
@@ -35,10 +59,28 @@ export default {
     props: ['user'],
     data() {
         return {
-            posts: []
+            posts: [],
+            paginate: ['posts']
+        }
+    },
+    filters: {
+        resume(value) {
+            let resume = value.slice(0, 200);
+            return resume + '...'
         }
     },
     methods: {
+        async visit(id) {
+            try {
+                const url   = `/post/visit/new`
+                let params  = {
+                    id
+                }
+                let resp    = await axios.post(url, params)
+            } catch (error) {
+                console.log(error)
+            }
+        },
         redirect(id, index) {
             if(this.user != undefined && this.user == 'guest') {
                 let anchor  = document.createElement('a')
@@ -49,15 +91,18 @@ export default {
                 name: 'AnPost', 
                 params: {
                         id,
-                        event: this.posts[index]
+                        post: this.posts[index]
                     }
                 })
             }
+
+            this.visit(id)
         },
         async getPost() {
             try {
                 const url       = `/all/posts`
-                let responses   = await axios.get(url);
+                let responses   = await axios.get(url)
+
                 if(responses.data) {
                     this.posts = responses.data
                 }                
@@ -71,3 +116,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.paginate-links {
+    cursor: pointer;
+}
+</style>

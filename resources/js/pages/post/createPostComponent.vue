@@ -46,7 +46,7 @@
                             <md-table-head>Slug</md-table-head>
                             <md-table-head>Descripción</md-table-head>
                             <md-table-head>Miniatura</md-table-head>
-                            <md-table-head>Video</md-table-head>
+                            <md-table-head>Url vídeo</md-table-head>
                             <md-table-head>Permitir Comentarios</md-table-head>
                             <md-table-head>Publicar</md-table-head>
                             <md-table-head>Acciones</md-table-head>
@@ -56,7 +56,7 @@
                             <md-table-cell>{{ post.title }}</md-table-cell>
                             <md-table-cell>{{ post.author }}</md-table-cell>
                             <md-table-cell>{{ post.slug }}</md-table-cell>
-                            <md-table-cell>{{ post.description }}</md-table-cell>
+                            <md-table-cell>{{ post.description.slice(0, 10) }}</md-table-cell>
                             <md-table-cell>
                                 <img v-if="post.image" :src="`storage/${ post.image }`" alt="vista previa">
                             </md-table-cell>
@@ -64,8 +64,8 @@
                             <md-table-cell>{{ post.comment ? 'Si' : 'No' }}</md-table-cell>
                             <md-table-cell>{{ post.published ? 'Si' : 'No' }}</md-table-cell>
                             <md-table-cell>
-                                <button class="btn btn-small blue" @click="editPost(index)">Edit</button>
-                                <button class="btn btn-small red" @click="delPost(post.id)">Delete</button>
+                                <button class="btn btn-small blue" @click="editPost(index)">Editar</button>
+                                <button class="btn btn-small red" @click="delPost(post.id)">Borrar</button>
                             </md-table-cell>
                         </md-table-row>
                     </md-table>
@@ -144,8 +144,9 @@ export default {
         },
         async getPost() {
             try {
-                let url = `/admin/posts`
-                const response = await axios.get(url)
+                const url       = `/admin/posts`
+                let response    = await axios.get(url)
+
                 if (response.data) {
                     this.posts = response.data
                 }

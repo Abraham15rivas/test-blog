@@ -20,7 +20,6 @@ class Post extends Model
        'title',
        'slug',
        'author',
-       'likes',
        'visits',
        'description',
        'image',

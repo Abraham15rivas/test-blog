@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col m12 s12 mt">
                 <h3 class="center-align"> Administración de comentarios ! </h3>
-                <div v-if="questions.length > 0">
+                <div v-if="comments.length > 0">
                     <md-table class="mt mb">
                         <md-table-row>
                             <md-table-head md-numeric>ID</md-table-head>
@@ -24,13 +24,13 @@
                             <md-table-cell>{{ JSON.parse(comment.participant_data).email }}</md-table-cell>
                             <md-table-cell>{{ comment.post.title }}</md-table-cell>
                             <md-table-cell v-if="comment.status == 'revision'">
-                                <button class="btn btn-small green" @click="approvedComment(comment.id, comment.content)">Pass</button>
-                                <button class="btn btn-small red" @click="deneidComment(comment.id)">Deny</button>
+                                <button class="btn btn-small green" @click="approvedComment(comment.id, comment.content)">Aprobar</button>
+                                <button class="btn btn-small red" @click="deneidComment(comment.id)">Negar</button>
                             </md-table-cell>
                             <md-table-cell v-else>
                                 <button 
                                     :class="[comment.status == 'approved' ? 'btn btn-small green disabled' : 'btn btn-small red disabled']" 
-                                    v-text="comment.status == 'approved' ? 'Approved' : 'Denied'"
+                                    v-text="comment.status == 'approved' ? 'Aprobado' : 'Negado'"
                                 ></button>
                             </md-table-cell>
                         </md-table-row>
@@ -57,7 +57,7 @@ export default {
                 let responses   = await axios.get(url)
 
                 if(responses.data) {
-                    this.questions = responses.data
+                    this.comments = responses.data
                 }
             } catch (error) {
                 console.log(error)
@@ -86,12 +86,12 @@ export default {
                 console.log(error)
             }
         },
-        async setAnswerComment(content, question_id) {
+        async setAnswerComment(content, comment_id) {
             try {
                 const url   = `/admin/answer/approved`
                 let params  = {
                     content,
-                    question_id
+                    comment_id
                 }
 
                 let responses = await axios.post(url, params)
@@ -110,7 +110,7 @@ export default {
                 console.log(error)
             }
         },
-        async approvedComment(question_id, content) {
+        async approvedComment(comment_id, content) {
             const { value: response } = await Swal.fire({
                 title: 'Responder comentario !',
                 html: `<p>${content}</p>`,
@@ -120,7 +120,7 @@ export default {
             })
             if (response) {
                 Swal.fire(`Ingresaste esta respuesta: ${response}`)
-                this.setAnswerComment(response, question_id)
+                this.setAnswerComment(response, comment_id)
             }
         },
     },

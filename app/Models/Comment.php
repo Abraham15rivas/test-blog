@@ -27,7 +27,7 @@ class Comment extends Model
         return $this->belongsTo(Post::class);
     }
 
-    public function answers() {
-        return $this->hasMany(Answer::class);
+    public function answer() {
+        return $this->hasOne(Answer::class);
     }
 }

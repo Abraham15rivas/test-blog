@@ -12,6 +12,7 @@ import VueMaterial from 'vue-material'
 import { MdButton, MdContent, MdTabs } from 'vue-material/dist/components'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
+import VuePaginate from 'vue-paginate'
 
 // Definir los componentes globales
 Vue.component('header-component', require('./components/header/headerComponent.vue').default);
@@ -24,6 +25,7 @@ Vue.use(VueMaterial)
 Vue.use(MdButton)
 Vue.use(MdContent)
 Vue.use(MdTabs)
+Vue.use(VuePaginate)
 
 // Instancia de vue
 const app = new Vue({

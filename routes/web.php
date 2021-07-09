@@ -27,6 +27,9 @@ Route::group([
     Route::get('/analytic', [HomeController::class, 'show']);
     Route::get('/post/{post}', [HomeController::class, 'show']);
     Route::get('/all/posts', [HomeController::class, 'index']);
+    Route::get('/comments/approved/{post}', [HomeController::class, 'allApproved']);
+    Route::post('/comment/new', [HomeController::class, 'setComment']);
+    Route::post('/post/visit/new', [HomeController::class, 'countVisit']);
 });
 
 // Grupo de rutas usuarios autenticados

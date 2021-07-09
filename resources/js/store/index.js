@@ -8,7 +8,8 @@ export default new Vuex.Store({
     state:{
         user: null,
         profile: null,
-        roles: null
+        roles: null,
+        posts: []
     },
     mutations:{
         setUser(state, payload) {
@@ -19,6 +20,9 @@ export default new Vuex.Store({
         },
         setRoles(state, payload) {
             state.roles = payload
+        },
+        setPosts(state, payload) {
+            state.posts = payload
         }
     },
     actions:{
@@ -53,6 +57,18 @@ export default new Vuex.Store({
                 if(responses.data) {
                     const roles = responses.data
                     context.commit('setRoles', roles);
+                }                
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        async getAllPost(context) {
+            try {
+                let url = `/all/posts`
+                const responses = await axios.get(url);
+                if(responses.data) {
+                    const posts = responses.data
+                    context.commit('setPosts', posts);
                 }                
             } catch (error) {
                 console.log(error)

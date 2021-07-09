@@ -12,4 +12,13 @@ Route::group([
     Route::post('/posts/store', [HomeController::class, 'store']);
     Route::post('/posts/{post}/update', [HomeController::class, 'update']);
     Route::delete('/posts/{post}/delete', [HomeController::class, 'destroy']);
+
+    // Gestión de comentarios y respuestas
+    Route::get('/comments/all', [HomeController::class, 'allComments']);
+    Route::get('/comments/deneid', [HomeController::class, 'allDenied']);
+    Route::post('/comments/deneid', [HomeController::class, 'deniedComment']);
+    Route::post('/answer/approved', [HomeController::class, 'answerComment']);
+
+    //  Graficas
+    Route::get('/all/visits', [HomeController::class, 'allVisits']);
 });

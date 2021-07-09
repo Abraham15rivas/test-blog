@@ -18,7 +18,6 @@ class CreatePostsTable extends Migration
             $table->string('title');
             $table->string('slug');
             $table->string('author');
-            $table->bigInteger('likes')->default(0);
             $table->bigInteger('visits')->default(0);
             $table->longText('description')->nullable();
             $table->string('image')->nullable();

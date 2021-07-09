@@ -2,7 +2,7 @@
 
 @section('content')
     <an-post-component
-        :event="{{ $event }}"
+        :post="{{ $post }}"
         user="{{ $check == true ? 'auth' : 'guest' }}"
     ></an-post-component>
 @endsection

@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\PostRequest;
-use App\Models\Post;
+use App\Models\{Post, Comment, Answer};
 
 class HomeController extends Controller
 {
     public function index() {
-        $posts = Post::get();
+        $posts = Post::orderByDesc('created_at')->get();
         return $posts->toJson();
     }
 
@@ -72,5 +72,52 @@ class HomeController extends Controller
         $post->delete();
 
         return 'ok';
+    }
+
+    public function allComments() {
+        $comments = Comment::all()->load('post');
+        return $comments;
+    }
+
+    public function allDenied() {
+        $comments = Comment::where('status', '=', 'denied')->get();
+        return $comments->load('post');
+    }
+
+    public function deniedComment(Request $request) {
+        $comment = Comment::findOrFail($request->id);
+        $comment->update([
+            'status' => 'denied'
+        ]);
+
+        return 'ok';
+    }
+
+    public function answerComment(Request $request) {
+        Answer::create([
+            'content'       => $request->content,
+            'comment_id'    => $request->comment_id
+        ]);
+
+        $comment = Comment::findOrFail($request->comment_id);
+        $comment->update([
+            'status' => 'approved'
+        ]);
+
+        return 'ok';
+    }
+
+    public function allVisits() {
+        $posts  = Post::get();
+        $data   = collect();
+
+        foreach ($posts as $post) {
+            $data->push([
+               'name'   => $post->title,
+               'y'      => $post->visits
+            ]);
+        }
+
+        return $data->toJson();
     }
 }
